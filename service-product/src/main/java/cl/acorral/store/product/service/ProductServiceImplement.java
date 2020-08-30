@@ -44,6 +44,7 @@ public class ProductServiceImplement implements ProductService{
         pDB.setDescription(product.getDescription());
         pDB.setCategory(product.getCategory());
         pDB.setPrice(product.getPrice());
+        pDB.setStock(product.getStock());
         return productRepository.save(pDB) ;
     }
 
