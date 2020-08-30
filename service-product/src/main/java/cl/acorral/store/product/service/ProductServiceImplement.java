@@ -3,15 +3,19 @@ package cl.acorral.store.product.service;
 import cl.acorral.store.product.entity.Category;
 import cl.acorral.store.product.entity.Product;
 import cl.acorral.store.product.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 
+@Service
+@RequiredArgsConstructor
 public class ProductServiceImplement implements ProductService{
 
-    @Autowired
-    private ProductRepository productRepository;
+    //@Autowired
+    private final ProductRepository productRepository;
 
     @Override
     public List<Product> listAllProducts() {
