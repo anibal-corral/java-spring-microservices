@@ -1,7 +1,0 @@
-En este branch agregué las siguientes dependencias:
-Spring Web 	
-Spring Data JPA: para manejar el acceso a datos.
-H2 Database: para trabajar con una base de datos en memoria
-Lombok: para poder generar anotaciones.
-
-
