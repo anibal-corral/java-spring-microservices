@@ -7,8 +7,11 @@ import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +59,10 @@ public ResponseEntity<Product> getProduct(@PathVariable("id") Long id){
         return ResponseEntity.ok(p);
 }
 @PostMapping
-public ResponseEntity<Product> createProduct(@RequestBody Product p){
+public ResponseEntity<Product> createProduct(@Valid @RequestBody Product p, BindingResult result){
+        if(result.hasErrors()){
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAYd)
+        }
         Product pCreated = productService.createProduct(p);
         return ResponseEntity.status(HttpStatus.CREATED).body(pCreated);
 
