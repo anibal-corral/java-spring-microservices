@@ -1,8 +1,10 @@
-package cl.acorral.store.product;
+package cl.acorral.store.product.controller;
 
 import cl.acorral.store.product.entity.Category;
 import cl.acorral.store.product.entity.Product;
 import cl.acorral.store.product.service.ProductService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +15,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/products")
@@ -61,7 +66,7 @@ public ResponseEntity<Product> getProduct(@PathVariable("id") Long id){
 @PostMapping
 public ResponseEntity<Product> createProduct(@Valid @RequestBody Product p, BindingResult result){
         if(result.hasErrors()){
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAYd)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, this.formatMessage(result));
         }
         Product pCreated = productService.createProduct(p);
         return ResponseEntity.status(HttpStatus.CREATED).body(pCreated);
@@ -92,5 +97,28 @@ public ResponseEntity<Product> updateStockProducts(@PathVariable("id") Long id,@
         return ResponseEntity.notFound().build();
     }
     return ResponseEntity.ok(product);
+}
+
+private String formatMessage(BindingResult result){
+        List<Map<String,String>> errors = result.getFieldErrors().stream()
+                .map(err -> {
+                    Map<String,String> error = new HashMap<>();
+                    error.put(err.getField(),err.getDefaultMessage());
+                    return error;
+                }).collect(Collectors.toList());
+
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .code("01")
+                .messages(errors).build();
+        //Este fragmento de codigo es para devolver el objeto en un json
+    ObjectMapper mapper = new ObjectMapper();
+    String jsonString ="";
+    try {
+        jsonString = mapper.writeValueAsString(errorMessage);
+    }catch (JsonProcessingException e){
+        e.printStackTrace();
+    }
+    return jsonString;
+
 }
 }
